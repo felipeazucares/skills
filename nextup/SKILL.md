@@ -1,6 +1,6 @@
 ---
 name: nextup
-description: Figures out what to work on next in a software project by reading its specification/roadmap markdown docs, CLAUDE.md, and open GitHub issues/PRs, then produces a sized (S/M/L) To Do list for that item. This is a PLANNING-ONLY skill — it never writes code, edits files, or opens branches/PRs/issues. Use it whenever the user asks "what should I work on next", "what's next on the roadmap", "plan out the next ticket", "scope issue #N for me", "what's left before we can ship", or similar — especially in repos that track work across a mix of markdown docs (PROGRESS.md, ROADMAP.md, design docs) and GitHub issues, where the answer isn't obvious from either source alone. Also trigger when the user wants a task broken down and estimated before committing to implementation.
+description: Figures out what to work on next in a software project by reading its specification/roadmap markdown docs, CLAUDE.md, and open GitHub issues/PRs, then produces a sized (S/M/L) To Do list for that item, test-first when the item involves code (writing/locating its tests is always the plan's leading step, before any implementation step). This is a PLANNING-ONLY skill — it never writes code, edits files, or opens branches/PRs/issues, including the tests it plans for. Use it whenever the user asks "what should I work on next", "what's next on the roadmap", "plan out the next ticket", "scope issue #N for me", "what's left before we can ship", or similar — especially in repos that track work across a mix of markdown docs (PROGRESS.md, ROADMAP.md, design docs) and GitHub issues, where the answer isn't obvious from either source alone. Also trigger when the user wants a task broken down and estimated before committing to implementation.
 ---
 
 # Nextup
@@ -100,12 +100,26 @@ Size each step **S / M / L** (relative effort, not time):
   something not yet nailed down (an unresolved design question, an
   external dependency, unclear requirements).
 
-Prefer the repo's own conventions for step shape when they're visible
-(e.g. a project that does test-first development per ticket should get
-a plan shaped as "write test → confirm red → implement → confirm green"
-per unit of work, not a generic "implement X" blob). Check CLAUDE.md
-and any contributing/testing docs for these conventions before
-inventing your own structure.
+Before sizing, check whether the item has a test spec: a dedicated
+test-planning doc (e.g. a `*_tests.md` companion to the spec suite, or
+a "Testing"/"Acceptance Criteria" section in its FEATURE.md or design
+doc), or a documented test-first convention in CLAUDE.md or a
+contributing/testing doc. If the item involves writing or changing
+code, the plan's first step(s) MUST be building out that test spec —
+writing the actual test case(s), from the existing test-planning doc
+if one exists, or derived directly from the item's acceptance criteria
+if it doesn't — with implementation steps ordered strictly after them,
+never before. This is a requirement, not a preference: never propose
+"implement X" as step 1 when the item involves code. The only
+exception is an item with no meaningful test surface (a pure doc edit,
+a config-only change) — say explicitly why testing doesn't apply
+rather than silently omitting the step.
+
+Beyond that ordering, prefer the repo's own conventions for step
+*shape* when they're visible (e.g. "write test → confirm red →
+implement → confirm green" as one combined unit of work, vs. separate
+steps for each). Check CLAUDE.md and any contributing/testing docs for
+how this repo likes it structured.
 
 Call out risks separately from the steps: unresolved design questions,
 things you're inferring rather than reading directly, anything that
@@ -147,7 +161,12 @@ not do it preemptively.
 - Read-only research tools only: reading files, `git status`/`log`/
   `branch` (no mutating git commands), `gh issue list`/`view`, `gh pr
   list`/`view`. Never `Edit`/`Write`/`NotebookEdit`, never `git commit`/
-  `checkout -b`/`push`, never `gh issue create`/`pr create`.
+  `checkout -b`/`push`, never `gh issue create`/`pr create`. This
+  applies to the tests the plan calls for too — you plan that they get
+  written first, you don't write them yourself.
+- Any plan involving code changes must open with the test-writing
+  step(s) for that code, sized before the implementation steps that
+  make them pass — never the other way round.
 - If the user's message asks you to plan *and* implement in the same
   breath, do the planning, present it, and then explicitly ask before
   touching any code — don't silently roll straight into
