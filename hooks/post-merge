@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# Regenerates opencode command shims after every `git pull`/merge, so a new
+# or updated skill gets its /name command without a manual step.
+# Activated per-machine via: git config core.hooksPath hooks
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+echo "post-merge: regenerating opencode commands from skills..."
+"$REPO_ROOT/scripts/sync-to-opencode-commands.sh"
