@@ -67,6 +67,14 @@ for skill_md in "$SKILLS_DIR"/*/SKILL.md; do
     continue
   fi
 
+  # Don't clobber a hand-authored command (e.g. one routing to a specific
+  # subagent via `agent:`/`subtask:`) -- those are tracked as symlinks into
+  # commands/ in this repo. Only overwrite plain, previously-generated files.
+  if [[ -L "$COMMANDS_DIR/${name}.md" ]]; then
+    echo "Skipping ${name} (hand-authored command, symlinked -- not regenerating)"
+    continue
+  fi
+
   cat > "$COMMANDS_DIR/${name}.md" <<CMD_EOF
 ---
 description: "${description}"
