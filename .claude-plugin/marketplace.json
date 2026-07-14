@@ -27,16 +27,9 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/algorithmic-art",
-        "./skills/brand-guidelines",
-        "./skills/canvas-design",
-        "./skills/doc-coauthoring",
         "./skills/frontend-design",
-        "./skills/internal-comms",
         "./skills/mcp-builder",
         "./skills/skill-creator",
-        "./skills/slack-gif-creator",
-        "./skills/theme-factory",
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
