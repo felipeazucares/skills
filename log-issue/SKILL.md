@@ -89,18 +89,8 @@ mid-implementation the way you can ask one now. So:
   not a prescribed solution — deciding *how* to fix it is the implementer's job, unless the user
   already has a specific approach in mind and states it.
 
-## Step 5 — Check for duplicates
 
-Search open issues for likely overlap before drafting further:
-
-```
-gh issue list --search "<2-4 keywords from the summary>" --state open
-```
-
-Show any close matches (number, title, URL) to the user. If one looks like a genuine duplicate,
-ask whether to stop, or proceed anyway because this is related-but-distinct.
-
-## Step 6 — Handle the area label
+## Step 7 — Handle the area label
 
 If the area is frontend or API, apply a real GitHub label for it — always, regardless of whether
 the template you used in Step 3 already has its own text field for area. The two aren't
@@ -118,7 +108,7 @@ Then apply it in Step 8 alongside the category label (`bug`/`enhancement`), the 
 Skip label creation for "unknown" — it's a note for the implementer, not something worth making
 queryable.
 
-## Step 7 — Draft, then confirm before creating
+## Step 8 — Draft, then confirm before creating
 
 Assemble the full issue — title, body, labels — and show the complete draft to the user exactly as
 it will be posted. Get explicit go-ahead before running `gh issue create`. Filing a GitHub issue is
@@ -128,7 +118,7 @@ trail) — treat this the same way you'd treat a push or opening a PR, and confi
 Title convention: `<Area prefix if known>: <short imperative summary>`, e.g. `Frontend: Duplicate
 button silently fails on root nodes`. Skip the prefix when area is unknown.
 
-## Step 8 — Create it
+## Step 9 — Create it
 
 ```
 gh issue create --title "..." --body "..." --label bug --label frontend
