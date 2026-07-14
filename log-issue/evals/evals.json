@@ -1,0 +1,47 @@
+{
+  "skill_name": "log-issue",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "login page is broken",
+      "expected_output": "The skill treats this as too vague to file as-is, asks (or makes and notes) reasonable clarifying assumptions, and creates a bug ticket with real repro steps and falsifiable acceptance criteria -- not the user's one-liner pasted verbatim.",
+      "files": [],
+      "expectations": [
+        "No files under server/ or frontend/src/ were modified during the task",
+        "The agent asked clarifying questions or explicitly noted assumptions it made to fill gaps, rather than filing 'login page is broken' verbatim as the entire ticket body",
+        "A real GitHub issue was created (a valid issue number and URL are reported)",
+        "The issue body includes concrete reproduction steps beyond the user's one-line description",
+        "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+        "The issue has the 'bug' label applied"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "When I duplicate a node deep, the copies keep the original node's tags but the description field comes back empty. Happens on POST /nodes/{id}/duplicate?deep=true. Should be an easy repro.",
+      "expected_output": "The skill files a bug ticket referencing the specific endpoint, labels it as an API-area bug, and does not attempt to fix the underlying code.",
+      "files": [],
+      "expectations": [
+        "No files under server/ or frontend/src/ were modified during the task",
+        "A real GitHub issue was created (a valid issue number and URL are reported)",
+        "The issue body explicitly references the POST /nodes/{id}/duplicate?deep=true endpoint or the relevant NodeStorage duplicate code path",
+        "The issue has the 'bug' label applied",
+        "The issue is classified/labeled as API area (not frontend), given this is a backend duplicate-endpoint bug",
+        "The issue body includes specific, falsifiable acceptance criteria describing what 'fixed' looks like"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "we should be able to export a work as markdown",
+      "expected_output": "The skill checks for duplicate/overlapping issues (this repo's CLAUDE.md already lists an Export feature on the roadmap) before filing, classifies the area honestly, and only creates a new ticket if it's genuinely distinct.",
+      "files": [],
+      "expectations": [
+        "No files under server/ or frontend/src/ were modified during the task",
+        "The agent performed a duplicate/overlap check against existing open issues before finalizing and reported what it found",
+        "The agent's summary states a clear area classification (frontend, API, or unknown) with reasoning, rather than skipping this decision",
+        "If a new issue was created, it has the 'enhancement' label applied",
+        "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+        "The final output makes clear whether a new issue was actually created or whether the agent decided not to due to an existing duplicate"
+      ]
+    }
+  ]
+}

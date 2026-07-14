@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "clear-bug-duplicate-node",
+  "prompt": "When I duplicate a node deep, the copies keep the original node's tags but the description field comes back empty. Happens on POST /nodes/{id}/duplicate?deep=true. Should be an easy repro.",
+  "assertions": [
+    "No files under server/ or frontend/src/ were modified during the task",
+    "A real GitHub issue was created (a valid issue number and URL are reported)",
+    "The issue body explicitly references the POST /nodes/{id}/duplicate?deep=true endpoint or the relevant NodeStorage duplicate code path",
+    "The issue has the 'bug' label applied",
+    "The issue is classified/labeled as API area (not frontend), given this is a backend duplicate-endpoint bug",
+    "The issue body includes specific, falsifiable acceptance criteria describing what 'fixed' looks like"
+  ]
+}

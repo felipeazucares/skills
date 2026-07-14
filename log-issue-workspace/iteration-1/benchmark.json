@@ -1,0 +1,361 @@
+{
+  "metadata": {
+    "skill_name": "log-issue",
+    "skill_path": "/Users/donfelipe/.claude/skills/log-issue",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-14T10:35:14Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 231.9,
+        "tokens": 57913,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Read-only investigation of database.py/api.py; no Edit/Write against source. git status confirmed clean."
+        },
+        {
+          "text": "A real GitHub issue was created (a valid issue number and URL are reported)",
+          "passed": true,
+          "evidence": "Verified via gh issue view 106: OPEN, title 'API: Deep duplicate loses description field on copied nodes'."
+        },
+        {
+          "text": "The issue body explicitly references the POST /nodes/{id}/duplicate?deep=true endpoint or the relevant NodeStorage duplicate code path",
+          "passed": true,
+          "evidence": "Body cites NodeStorage.duplicate_deep() and duplicate_shallow() with line numbers (~1094-1224) and the /nodes/{id}/duplicate?deep=true endpoint explicitly in Steps to reproduce."
+        },
+        {
+          "text": "The issue has the 'bug' label applied",
+          "passed": true,
+          "evidence": "gh issue view 106 labels: ['bug', 'p2', 'api']."
+        },
+        {
+          "text": "The issue is classified/labeled as API area (not frontend), given this is a backend duplicate-endpoint bug",
+          "passed": true,
+          "evidence": "'api' label present; label was newly created (gh label create api) since it didn't previously exist in the repo."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria describing what 'fixed' looks like",
+          "passed": true,
+          "evidence": "Body has 3 concrete acceptance criteria items, including a regression test requirement and a shallow-duplicate check."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 244.8,
+        "tokens": 62979,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Only read/grep/gh calls against the repo; the sole Write call targeted a scratchpad file used as --body-file input."
+        },
+        {
+          "text": "The agent performed a duplicate/overlap check against existing open issues before finalizing and reported what it found",
+          "passed": true,
+          "evidence": "Found and read issue #74 and DESIGN.md's OD-04 entry; explicitly reasoned about why Markdown is 'related but distinct' rather than a clean duplicate, and cross-linked #74 in the new issue's body."
+        },
+        {
+          "text": "The agent's summary states a clear area classification (frontend, API, or unknown) with reasoning, rather than skipping this decision",
+          "passed": true,
+          "evidence": "Issue #107 body has a 'Related feature / area' field (from the repo's own enhancement.yml template) stating 'API -- server/app/api.py, server/app/database.py (WorkStorage, NodeStorage)'. Note: the run's own self-reported summary claimed this was skipped, which was incorrect self-assessment -- graded against the actual issue content, not the transcript's claim."
+        },
+        {
+          "text": "If a new issue was created, it has the 'enhancement' label applied",
+          "passed": true,
+          "evidence": "gh issue view 107 labels: ['enhancement', 'p2']."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+          "passed": true,
+          "evidence": "Body has an 'Acceptance criteria' section with 6 concrete, testable items (status codes, isolation behavior, empty-work handling, field presence)."
+        },
+        {
+          "text": "The final output makes clear whether a new issue was actually created or whether the agent decided not to due to an existing duplicate -- it does not leave this ambiguous",
+          "passed": true,
+          "evidence": "Summary and issue body both state plainly: new issue #107 created, split from #74 with explicit rationale."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 232.8,
+        "tokens": 58573,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Summary and git status confirm read-only investigation; no Edit/Write calls against server/ or frontend/src/."
+        },
+        {
+          "text": "The agent asked clarifying questions or explicitly noted assumptions it made to fill gaps, rather than filing 'login page is broken' verbatim as the entire ticket body",
+          "passed": true,
+          "evidence": "Issue #105 has a dedicated 'Assumptions / open questions' section with 5 explicit, labeled assumptions (failure mode, credential path, environment, regression status, severity)."
+        },
+        {
+          "text": "A real GitHub issue was created (a valid issue number and URL are reported)",
+          "passed": true,
+          "evidence": "Verified via gh issue view 105 --repo felipeazucares/fabulator: OPEN, title 'Login page broken \u2014 users cannot sign in (root cause not yet diagnosed)'."
+        },
+        {
+          "text": "The issue body includes concrete reproduction steps beyond the user's one-line description",
+          "passed": true,
+          "evidence": "Body has a 'Steps to reproduce' section: start backend/frontend, navigate to /login, submit credentials -- with an explicit caveat that the exact failure point is unconfirmed."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+          "passed": true,
+          "evidence": "Body has an 'Acceptance criteria' checklist with 5 concrete, testable items (e.g. 'A valid username/password successfully authenticates and lands the user on /works')."
+        },
+        {
+          "text": "The issue has the 'bug' label applied",
+          "passed": true,
+          "evidence": "gh issue view 105 labels: ['bug', 'p1']."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.333,
+        "passed": 2,
+        "failed": 4,
+        "total": 6,
+        "time_seconds": 349.9,
+        "tokens": 79207,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Live-repro test data was created/deleted via the API, not the filesystem; git status confirmed no source edits."
+        },
+        {
+          "text": "A real GitHub issue was created (a valid issue number and URL are reported)",
+          "passed": false,
+          "evidence": "No new issue was created. This run found issue #106 already open (filed moments earlier by the with_skill run against the same real repo) and added a comment to it instead of duplicating."
+        },
+        {
+          "text": "The issue body explicitly references the POST /nodes/{id}/duplicate?deep=true endpoint or the relevant NodeStorage duplicate code path",
+          "passed": true,
+          "evidence": "The comment added to #106 documents a live repro against duplicate?deep=true and cites the same database.py/api.py code paths."
+        },
+        {
+          "text": "The issue has the 'bug' label applied",
+          "passed": false,
+          "evidence": "No labeling action was taken by this run -- it only commented on an issue whose labels were set by a different (with_skill) run."
+        },
+        {
+          "text": "The issue is classified/labeled as API area (not frontend), given this is a backend duplicate-endpoint bug",
+          "passed": false,
+          "evidence": "Same as above -- no labeling action taken by this run."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria describing what 'fixed' looks like",
+          "passed": false,
+          "evidence": "The comment is a repro report (bug did not reproduce live), not a ticket draft -- it doesn't restate or add acceptance criteria."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 120.6,
+        "tokens": 48230,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Only search/read commands and one gh issue create call; git status showed only pre-existing unrelated staged changes."
+        },
+        {
+          "text": "The agent performed a duplicate/overlap check against existing open issues before finalizing and reported what it found",
+          "passed": true,
+          "evidence": "Found issue #74 and read DESIGN.md's OD-04 entry; reasoned Markdown doesn't share #74's server-dependency blocker and split it out, same conclusion as the with_skill run reached independently."
+        },
+        {
+          "text": "The agent's summary states a clear area classification (frontend, API, or unknown) with reasoning, rather than skipping this decision",
+          "passed": false,
+          "evidence": "Issue #104 body (What / Why split from #74 / Building block already in place / Proposed endpoint / Out of scope / Next step / Est) has no area/feature-area section or statement anywhere."
+        },
+        {
+          "text": "If a new issue was created, it has the 'enhancement' label applied",
+          "passed": true,
+          "evidence": "gh issue view 104 labels: ['enhancement', 'p2']."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+          "passed": false,
+          "evidence": "No 'Acceptance criteria' section exists. 'Proposed endpoint' describes shape/behavior, and 'Next step' defers detail to a future feature spec document, but nothing in the current body is a falsifiable pass/fail checklist."
+        },
+        {
+          "text": "The final output makes clear whether a new issue was actually created or whether the agent decided not to due to an existing duplicate -- it does not leave this ambiguous",
+          "passed": true,
+          "evidence": "Summary and issue body both clearly state: new issue #104 created, explicitly split from #74."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 141.3,
+        "tokens": 48148,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No files under server/ or frontend/src/ were modified during the task",
+          "passed": true,
+          "evidence": "Only read files and ran non-mutating commands (npm install, vitest, vite build, gh); git status confirmed no new edits."
+        },
+        {
+          "text": "The agent asked clarifying questions or explicitly noted assumptions it made to fill gaps, rather than filing 'login page is broken' verbatim as the entire ticket body",
+          "passed": false,
+          "evidence": "Issue #103 lists open questions under 'What's needed to make progress' but never commits to assumptions to move the ticket forward -- it stops at 'we don't know' rather than filling the gaps the way the with_skill run did."
+        },
+        {
+          "text": "A real GitHub issue was created (a valid issue number and URL are reported)",
+          "passed": true,
+          "evidence": "Verified via gh issue view 103: OPEN, title 'Login page broken \u2014 report needs repro details'."
+        },
+        {
+          "text": "The issue body includes concrete reproduction steps beyond the user's one-line description",
+          "passed": false,
+          "evidence": "Body sections are Report / Investigation so far / What's needed to make progress / Suggested next step -- no 'Steps to reproduce' section at all."
+        },
+        {
+          "text": "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+          "passed": false,
+          "evidence": "No 'Acceptance criteria' section exists in the body -- closest is 'What's needed to make progress', which lists information gaps, not pass/fail criteria for a fix."
+        },
+        {
+          "text": "The issue has the 'bug' label applied",
+          "passed": true,
+          "evidence": "gh issue view 103 labels: ['bug']."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 236.5,
+        "stddev": 7.2021,
+        "min": 231.9,
+        "max": 244.8
+      },
+      "tokens": {
+        "mean": 59821.67,
+        "stddev": 2754.2,
+        "min": 57913,
+        "max": 62979
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.5,
+        "stddev": 0.167,
+        "min": 0.333,
+        "max": 0.667
+      },
+      "time_seconds": {
+        "mean": 203.9333,
+        "stddev": 126.8338,
+        "min": 120.6,
+        "max": 349.9
+      },
+      "tokens": {
+        "mean": 58528.33,
+        "stddev": 17908.4,
+        "min": 48148,
+        "max": 79207
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.50",
+      "time_seconds": "+32.6",
+      "tokens": "+1293"
+    }
+  },
+  "notes": [
+    "Eval 1 (clear-bug-duplicate-node) without_skill's 33% pass rate is largely a test-design artifact, not a fair skill-vs-no-skill signal: both configurations filed against the same real repo, and without_skill ran slightly later, walked into with_skill's just-created issue #106, and correctly avoided duplicating it by commenting instead. Most of the ticket-quality assertions don't apply to a comment. Future iterations should stagger or isolate with_skill/without_skill runs against the same real repo to avoid this collision, or accept it and read this eval's baseline number with that caveat.",
+    "That same without_skill run, unprompted, stood up the live Docker stack and attempted a real repro of the reported bug (46 tool calls, ~5.8 min, ~79k tokens -- the most expensive run of the six) and found it does NOT currently reproduce on main. None of the current assertions credit or even notice this -- it's arguably the single most substantively important finding across all 6 runs, and a 'did the agent attempt verification' dimension is missing from this eval set.",
+    "The 'no source files modified' assertion passed 6/6 across both configurations on every eval -- it never discriminated in this run. That's not a reason to drop it (guarding against scope creep into implementation is the skill's core promise), but it means the current prompts never actually tempted an agent to start fixing code. A future eval should phrase the request in a way that invites 'just fix it while you're at it' (e.g. 'this is annoying me, can you sort it') to see if the skill's scope boundary holds under real pressure.",
+    "Area-labeling was inconsistent across the two with_skill runs on the same axis: eval 1 (bug, no area field in bug_report.yml) created and applied a new 'api' GitHub label; eval 2 (feature, enhancement.yml already has a 'Related feature / area' text field) filled that text field with 'API' but did not also create/apply an 'api' label. Both are defensible reads of the skill's Step 3 vs. Step 6 instructions, but the inconsistency itself is worth resolving explicitly rather than leaving it to per-run judgment.",
+    "with_skill's own self-reported summary for eval 2 incorrectly claimed it had skipped area classification entirely -- it actually filled the template's native area field correctly. Grading against the live GitHub issue content (not the transcript's self-report) caught this; a grader relying solely on the executor's own summary would have under-scored a passing run.",
+    "with_skill pass rate was a clean 100% across all 3 evals with zero variance, while without_skill ranged from 33% (confounded, see above) to 67% -- even setting aside the confounded eval, without_skill was inconsistent (50%, 67%) where with_skill was uniformly complete. The skill's main value in this run looks less like 'baseline fails outright' and more like 'baseline does good instinctive work but is missing structural discipline (acceptance criteria, explicit assumptions, area classification) that the skill enforces every time.'",
+    "with_skill costs modest overhead: +32.6s and +1293 tokens on average versus without_skill. Given the consistency gain, that looks like a reasonable trade, though the token delta is noisy (without_skill's stddev is 17908 due to the eval-1 live-repro outlier) and would benefit from more runs per configuration before treating the exact magnitude as reliable."
+  ]
+}

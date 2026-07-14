@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "feature-export-markdown",
+  "prompt": "we should be able to export a work as markdown",
+  "assertions": [
+    "No files under server/ or frontend/src/ were modified during the task",
+    "The agent performed a duplicate/overlap check against existing open issues before finalizing (e.g. ran gh issue list --search, or referenced CLAUDE.md's existing Tier 4 Export roadmap item) and reported what it found",
+    "The agent's summary states a clear area classification (frontend, API, or unknown) with reasoning, rather than skipping this decision",
+    "If a new issue was created, it has the 'enhancement' label applied",
+    "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')",
+    "The final output makes clear whether a new issue was actually created or whether the agent decided not to due to an existing duplicate -- it does not leave this ambiguous"
+  ]
+}

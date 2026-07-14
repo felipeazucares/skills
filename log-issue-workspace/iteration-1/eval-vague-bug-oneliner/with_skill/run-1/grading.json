@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "No files under server/ or frontend/src/ were modified during the task", "passed": true, "evidence": "Summary and git status confirm read-only investigation; no Edit/Write calls against server/ or frontend/src/."},
+    {"text": "The agent asked clarifying questions or explicitly noted assumptions it made to fill gaps, rather than filing 'login page is broken' verbatim as the entire ticket body", "passed": true, "evidence": "Issue #105 has a dedicated 'Assumptions / open questions' section with 5 explicit, labeled assumptions (failure mode, credential path, environment, regression status, severity)."},
+    {"text": "A real GitHub issue was created (a valid issue number and URL are reported)", "passed": true, "evidence": "Verified via gh issue view 105 --repo felipeazucares/fabulator: OPEN, title 'Login page broken — users cannot sign in (root cause not yet diagnosed)'."},
+    {"text": "The issue body includes concrete reproduction steps beyond the user's one-line description", "passed": true, "evidence": "Body has a 'Steps to reproduce' section: start backend/frontend, navigate to /login, submit credentials -- with an explicit caveat that the exact failure point is unconfirmed."},
+    {"text": "The issue body includes specific, falsifiable acceptance criteria (not vague language like 'should work')", "passed": true, "evidence": "Body has an 'Acceptance criteria' checklist with 5 concrete, testable items (e.g. 'A valid username/password successfully authenticates and lands the user on /works')."},
+    {"text": "The issue has the 'bug' label applied", "passed": true, "evidence": "gh issue view 105 labels: ['bug', 'p1']."}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 232.8, "total_duration_seconds": 232.8},
+  "eval_feedback": {"overall": "No suggestions -- assertions were discriminating here and all evidence is genuine, verified against the live issue, not just the transcript's self-report."}
+}
