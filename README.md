@@ -86,4 +86,4 @@ ln -s ~/.claude/skills/agents/spec-reviewer-opencode.md ~/.config/opencode/agent
 ln -s ~/.claude/skills/commands/spec-review-opencode.md ~/.config/opencode/commands/spec-review.md
 ```
 
-Restart opencode afterwards so it picks up the new commands and agents.
+Restart opencode afterwards so it picks up the new commands and agen

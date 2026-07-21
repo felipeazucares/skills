@@ -3,15 +3,15 @@ name: build-critique-loop
 description: >-
   A worker/critic agentic dev loop. First implements the next item from an
   existing plan with the /donext skill, then hands the resulting diff to a
-  fresh Opus 4.8 sub-reviewer for a broad critique (correctness bugs,
+  fresh sub-reviewer (user-picked model) for a broad critique (correctness bugs,
   performance issues, simplification, style, and test-coverage gaps), presents
   a severity-prioritized findings list with a pithy one-line fix for each, and
   — only after the user picks which findings to apply — implements them and
-  verifies with the project's tests plus a quick Opus re-check. Use this
+  verifies with the project's tests plus a quick re-check. Use this
   whenever the user wants the next plan item BUILT *and* CRITIQUED by a stronger
   model in one pass, not just implemented. Trigger on phrasings like
   "worker-critic loop", "build and critique", "do the next thing then review
-  it", "implement the next item and have Opus check it", "critique loop",
+  it", "implement the next item and have a stronger model check it", "critique loop",
   "donext then review", or any request to pair /donext execution with a
   follow-up expert review-and-fix cycle. Prefer this over a bare /donext
   whenever the user wants the work hardened and reviewed, not merely written.
@@ -20,32 +20,34 @@ description: >-
 # Build–Critique Loop
 
 A worker/critic development cycle. The **worker** (this session) implements the
-next planned item; a stronger **critic** (a fresh Opus 4.8 sub-reviewer) tears
-the diff apart with fresh eyes; the user chooses which findings matter; the
-worker applies them and verifies. One item per invocation — then stop and hand
-back.
+next planned item; a **critic** (a fresh sub-reviewer using the model you pick)
+tears the diff apart with fresh eyes; the user chooses which findings matter;
+the worker applies them and verifies. One item per invocation — then stop and
+hand back.
 
 The value of the pattern is the *asymmetry and the fresh eyes*: the model that
 just wrote the code is the worst judge of it (it's invested in its own
 approach, and it can't see the assumptions it made). Delegating the critique to
-a separate Opus 4.8 agent that sees only the diff — not the reasoning that
+a separate sub-reviewer that sees only the diff — not the reasoning that
 produced it — surfaces bugs and shortcuts the author is blind to, and keeps the
 heavy review reasoning out of this session's context.
 
-> **On "switch to Opus 4.8, then switch back":** a session can't retarget its
-> own model mid-run. This loop realizes that intent with an Opus 4.8 *subagent*
-> for the critique instead — which is strictly better than a literal toggle:
-> genuine independent review rather than the author grading its own homework,
-> and no context pollution. The worker session simply continues as itself; there
-> is nothing to "switch back."
+> **Why a sub-reviewer instead of just telling the worker to "be more critical":**
+> The model that just wrote the code is the worst judge of it — it's invested
+> in its own approach and blind to the assumptions it made. Using a separate
+> sub-reviewer (especially a stronger or different one) gives genuinely
+> independent fresh eyes, keeps the review reasoning out of the worker's
+> context, and avoids polluting the working session with "what if" tangents.
+> The worker simply continues as itself; the reviewer is a separate process
+> that reports findings without touching the working tree.
 
 ## The loop
 
 1. **Implement** the next plan item with `/donext` (test-first, one item) UNLESS the prompt outlines a specific piece of work to be done. In which case FOCUS ON THAT.
-2. **Critique** the diff with an Opus 4.8 sub-reviewer (broad review).
+2. **Critique** the diff with a sub-reviewer (broad review, using the model you chose).
 3. **Present** a prioritized findings list — then **STOP** and let the user pick.
 4. **Apply** only the findings the user selected.
-5. **Verify** — run the project's relevant tests *and* a quick Opus re-check of
+5. **Verify** — run the project's relevant tests *and* a quick re-check of
    the applied fixes.
 6. **Report** and stop. Do not roll on to the next plan item.
 
@@ -65,6 +67,10 @@ start step 4 on findings the user hasn't chosen.
   tree is clean (`git status --short`). You'll use this to scope the critic's
   diff in step 2, and to respect the project's branch conventions (implement on
   a feature branch, never straight on `main`, unless the project says otherwise).
+- **Choose the critic model.** Ask the user: "Which model should I use for the
+  critic sub-reviewer?" and accept a model identifier (e.g., `"opus"` for Claude
+  Opus, `"gpt-4o"` for OpenAI, `"gemini-2.0-pro"` for Gemini). Throughout this
+  skill, `{CRITIC_MODEL}` represents the identifier the user chose.
 
 ## Step 1 — Implement (worker)
 
@@ -79,7 +85,7 @@ the code actually does what the item asked — a diff alone doesn't reveal inten
 If `/donext` reports there's nothing to do, or the item was a pure no-op, stop
 and tell the user — there's nothing to critique.
 
-## Step 2 — Critique (Opus 4.8 sub-reviewer)
+## Step 2 — Critique (sub-reviewer)
 
 **Scope the diff first**, so the critic reviews *the change*, not the whole
 codebase:
@@ -92,8 +98,8 @@ codebase:
   substituting the real base branch (usually `main`).
 
 **Spawn the critic** with the `Agent` tool: `subagent_type: "general-purpose"`,
-`model: "opus"` (this is what pins it to Opus 4.8 regardless of the worker's
-model — do **not** use `subagent_type: "fork"`, which ignores the model override
+`model: "{CRITIC_MODEL}"` (this pins the critic to the model you chose — do **not**
+use `subagent_type: "fork"`, which ignores the model override
 and runs on the worker's model). Give it a self-contained prompt — it starts
 cold with none of this session's context:
 
@@ -176,7 +182,7 @@ not lost — offer to file them as tickets if the project tracks work that way.
 If applying a fix means changing behavior the item's tests assert, update those
 tests deliberately and say why — don't silently loosen a test to make a fix pass.
 
-## Step 5 — Verify (tests + Opus re-check)
+## Step 5 — Verify (tests + re-check)
 
 Two checks, because a fix can both break a test and be subtly wrong in a way
 tests don't catch:
@@ -187,11 +193,11 @@ tests don't catch:
    than blindly running everything. Report pass/fail with the real output. If
    anything went red, fix it or surface it — don't report success over a
    failing suite. If the applied fixes have no test surface (a docs-only or
-   config-only cycle), say so plainly and let the Opus re-check carry
+   config-only cycle), say so plainly and let the re-check carry
    verification on its own — don't run an unrelated suite just to have run
    something.
-2. **Opus re-check.** Spawn a second, lighter Opus 4.8 sub-reviewer
-   (`model: "opus"`) over the *newly applied* fixes (`git diff` since step 4).
+2. **Re-check.** Spawn a second, lighter sub-reviewer
+   (`model: "{CRITIC_MODEL}"`) over the *newly applied* fixes (`git diff` since step 4).
    Ask it to confirm each applied fix actually resolves its finding and
    introduces no new problem. Keep it tight — this is a confirmation pass, not
    a fresh full review.
@@ -202,7 +208,7 @@ Give the user a short wrap-up:
 
 - **Built:** the plan item, and that its tests pass.
 - **Critique:** findings applied vs. deferred (with the deferred ones listed).
-- **Verify:** test result (pass/fail + counts) and the Opus re-check verdict.
+- **Verify:** test result (pass/fail + counts) and the re-check verdict.
 
 Then **stop**. This skill does one worker/critic cycle per invocation — it does
 not advance to the next plan item on its own. If the user wants to continue,
