@@ -41,7 +41,7 @@ heavy review reasoning out of this session's context.
 
 ## The loop
 
-1. **Implement** the next plan item with `/donext` (test-first, one item).
+1. **Implement** the next plan item with `/donext` (test-first, one item) UNLESS the prompt outlines a specific piece of work to be done. In which case FOCUS ON THAT.
 2. **Critique** the diff with an Opus 4.8 sub-reviewer (broad review).
 3. **Present** a prioritized findings list — then **STOP** and let the user pick.
 4. **Apply** only the findings the user selected.
@@ -60,7 +60,7 @@ start step 4 on findings the user hasn't chosen.
   *already-agreed* plan (a `nextup` to-do list, a PROGRESS.md "Next Steps"
   section, `.claude/context.md`, etc.). If there's no such plan, stop and say
   so — offer `/nextup` to make one. Don't invent a plan here; that's not this
-  skill's job.
+  skill's job. IF the user has specified a pierce of work check to see if there is a to do plan for that oitem if not use the paramters in /nextup to create one.
 - **Snapshot the git state.** Note the current branch and whether the working
   tree is clean (`git status --short`). You'll use this to scope the critic's
   diff in step 2, and to respect the project's branch conventions (implement on
