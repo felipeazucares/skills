@@ -48,7 +48,8 @@ to, and keeps the heavy review reasoning out of this session's context.
    implement ALL actionable findings** (this skill has no step-3 gate).
 4. **Verify** — run the project's relevant tests *and* a quick re-check of the
    applied fixes by the same critic model.
-5. **Report** and stop. Do not roll on to the next plan item.
+5. **Update the progress doc** (if the project keeps one), **report**, and
+   stop. Do not roll on to the next plan item.
 
 ---
 
@@ -236,7 +237,22 @@ tests don't catch:
    introduces no new problem. Keep it tight — a confirmation pass, not a fresh
    full review. The re-check is read-only.
 
-## Step 5 — Report and stop
+## Step 5 — Update the progress doc, then report and stop
+
+If the project keeps a progress-tracking doc — `PROGRESS.md`,
+`CHANGELOG.md`, or equivalent (the same file `nextup`/`donext` look for) —
+update it now, before anything from this cycle gets committed or a PR is
+opened for it. Follow the doc's own existing conventions for structure and
+tense (many split a live "Status" section, rewritten in place, from an
+append-only dated "Log" — match whatever this project actually does rather
+than inventing a format). Record what was built, the critic model used and
+why it was selected, findings applied vs. accepted-as-notes, and the verify
+result (tests + re-check) — the same information the chat report below
+carries. The point is that a PR opened for this work carries the doc update
+in the same diff, not as an afterthought bolted on later.
+
+If the project has no such doc, say so and skip this — don't invent one
+unasked.
 
 Give the user a short wrap-up:
 
@@ -274,5 +290,9 @@ they can invoke the loop again.
 - **Respect the project's git workflow.** If it mandates feature branches, the
   changes belong on one. Don't commit or push unless the user asks; if you do
   commit, follow the project's message conventions.
+- **Progress doc before PR, never after.** If the project tracks work in a
+  PROGRESS.md/CHANGELOG.md-equivalent, update it as part of step 5 —
+  before this cycle's work is committed or a PR opened for it. A PR without
+  the doc update is incomplete, not a separate follow-up task.
 - **Don't fabricate findings.** A clean diff is a valid outcome. A short, real
   list beats a long, padded one.
