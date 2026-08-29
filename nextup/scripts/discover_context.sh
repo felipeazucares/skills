@@ -35,18 +35,22 @@ gh_available=0
 gh_tmp_ok=1
 issues_tmp=$(mktemp) || gh_tmp_ok=0
 prs_tmp=$(mktemp) || gh_tmp_ok=0
-if [ "$gh_tmp_ok" -eq 1 ]; then
-  trap 'rm -f "$issues_tmp" "$prs_tmp"' EXIT
-fi
+trap 'rm -f "$issues_tmp" "$prs_tmp"' EXIT
 if [ "$gh_tmp_ok" -eq 1 ] && command -v gh >/dev/null 2>&1; then
   gh_available=1
   gh auth status >/dev/null 2>&1 &
   auth_pid=$!
+  # The redirection wraps the whole subshell, not just the `gh` command
+  # inside it — redirecting only the inner command still leaves the
+  # subshell process itself holding the script's inherited stdout open
+  # for its lifetime, which can block a downstream pipe reader even after
+  # this script has finished (seen when this call is never waited on, in
+  # the not-authenticated branch below).
   (cd "$repo_root" && gh issue list --state open --limit 200 \
-    --json number,title,labels,milestone,updatedAt,url 2>/dev/null >"$issues_tmp") &
+    --json number,title,labels,milestone,updatedAt,url 2>/dev/null) >"$issues_tmp" &
   issues_pid=$!
   (cd "$repo_root" && gh pr list --state open \
-    --json number,title,headRefName,url 2>/dev/null >"$prs_tmp") &
+    --json number,title,headRefName,url 2>/dev/null) >"$prs_tmp" &
   prs_pid=$!
 fi
 
@@ -85,6 +89,13 @@ gh_authed=0
 if [ "$gh_available" -eq 1 ] && wait "$auth_pid"; then
   gh_authed=1
 fi
+# When unauthenticated, the two list calls above are left un-waited and
+# un-reaped on purpose: they were fired speculatively, will fail on the
+# same auth wall, and their output is discarded either way — waiting on
+# them here would block this script on their latency for no benefit. The
+# EXIT trap unlinking their temp files out from under a still-running
+# background writer is safe (rm on an open file just defers reclaiming
+# the space until the last fd closes; it can't error or corrupt data).
 
 echo
 echo "=== GitHub issues (open) ==="
