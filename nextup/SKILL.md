@@ -10,11 +10,9 @@ research: **"what should I work on next?"** and **"what will it take?"**
 Then stop. Do not implement, edit, commit, branch, or file anything —
 the deliverable is the plan itself, presented in the chat.
 
-This matters because premature implementation defeats the point of
-asking for a plan first: the user wants to review scope and sizing
-*before* anything changes, and possibly redirect you toward a
-different item entirely. Treat any temptation to "just start on step
-1" as a bug in your own behavior.
+This matters: a plan lets the user review scope and redirect *before*
+anything changes. Treat any temptation to "just start on step 1" as a
+bug in your own behavior, not initiative.
 
 ## 1. Gather context
 
