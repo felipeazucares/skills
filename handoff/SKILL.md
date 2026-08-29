@@ -7,14 +7,37 @@ Save session context for the next session. Project progress lives in `PROGRESS.m
 
 ## Update PROGRESS.md
 
-Update PROGRESS.md in the specifications directory to reflect this session:
+PROGRESS.md can grow to hundreds of KB of session history — do not read or
+rewrite it wholesale. Locate its sections first (`grep -n '^## ' PROGRESS.md`),
+then read only the ones you need via offset/limit, not the whole file. It
+splits into two kinds of section (check its own preamble; if it declares a
+different structure, follow that instead — and if the structure is genuinely
+unclear, default to treating any dated, past-tense entry as frozen and only
+append, never edit, since that's the safer failure mode):
 
-- Mark as complete **only** items that were actually finished **and** verified this session.
-- Add any new tasks or sub-tasks that emerged during the work.
-- Correct any entries that are now stale or inaccurate.
-- Explicitly flag anything left in an in-progress or indeterminate state.
+- **Live/current-state sections** (often named "Status", "Open Items", "Next
+  Phase", or similar) — read and edit these in place:
+  - Mark as complete **only** items that were actually finished **and**
+    verified this session.
+  - Add any new tasks or sub-tasks that emerged during the work.
+  - Correct any entries that are now stale or inaccurate.
+  - Explicitly flag anything left in an in-progress or indeterminate state.
+- **An append-only historical log** (often named "Log") — this is usually
+  the largest section by far, and you don't need most of it: read only its
+  first entry or two (via offset/limit, not the whole section) to match
+  style and tone, then never edit or rewrite an existing entry, even a
+  stale-looking one — entries are frozen once written. Record this session
+  by adding **one new dated entry** in the same style as the entries already
+  there, placed where new entries actually go — the top, if the log reads
+  newest-first (the common case, and where a quick read already put you);
+  the bottom, if it reads oldest-first. Match the existing order, don't
+  assume. If the doc also keeps a rotated-out archive (e.g.
+  `PROGRESS_ARCHIVE.md`, possibly moved there by a project script such as
+  `specification/rotate_progress.py`) for entries past a certain age, leave
+  it alone — that rotation isn't this skill's job.
 
-Do not mark anything complete that was not verified, and do not invent progress.
+Do not mark anything complete that was not verified, and do not invent
+progress.
 
 ## Housekeeping
 
