@@ -7,12 +7,9 @@ description: Executes the single next unstarted item from a plan that's already 
 
 Execute the single next unstarted item from a plan that's already been
 agreed — a `nextup` to-do list, or the Next Steps section of
-`PROGRESS.md`/`.claude/context.md` — and stop. This is deliberately
-narrower than a full plan-and-build skill: it does not re-derive,
-re-scope, or expand the plan, and it does not walk multiple items in
-one pass. It exists for the case where planning already happened and
-the user just wants the next box ticked, one at a time, without a
-fresh planning cycle before every step.
+`PROGRESS.md`/`.claude/context.md` — then stop. It never re-derives,
+re-scopes, or expands the plan, and never walks more than one item per
+invocation: planning already happened, this just ticks the next box.
 
 If no plan exists yet — nothing in `context.md`'s Next Steps, no
 PROGRESS.md pointer, no prior `nextup` output the user is referring
@@ -25,7 +22,31 @@ Read, in order, whichever of these exist:
 - `.claude/context.md` — Next Steps section, if this session or a
   prior one left one.
 - `PROGRESS.md` (or the project's equivalent progress-tracking doc) —
-  for the current task and which plan item is next outstanding.
+  for the current task and which plan item is next outstanding. Scope
+  this the same way: skip only sections you can positively identify as
+  append-only history or a completed-work archive (one the doc itself
+  labels "Log"/"Changelog"/"History", or documents as frozen/past-tense)
+  — read everything else. Don't narrow to a single named "live" section
+  just because a preamble happens to call one out; a doc can have
+  several current-state sections a preamble doesn't individually name.
+  A project's progress doc can run to hundreds of KB of session
+  history; skipping the identifiably historical part alone still
+  captures most of that saving with no risk of missing the actual next
+  item. If the scoped read doesn't turn up an unambiguous next item, or
+  the doc declares no such structure at all, widen to reading the file
+  in full rather than guessing.
+
+A quick `git status` / `git log --oneline -10` in the repo — cheap,
+local, no network — is worth running too, as a staleness check against
+both docs above: if a recent merge or branch name suggests the doc's
+named "next item" already shipped, say so and confirm with the user
+before re-implementing it.
+
+If `context.md` and `PROGRESS.md` point at genuinely different items,
+don't silently pick one — surface the conflict and ask, the same way
+`nextup` does when its own sources disagree. A finer-grained pointer in
+one doc (a concrete step where the other names the enclosing phase)
+isn't a conflict — the finer-grained one wins without needing to ask.
 
 Then read only what that one item needs to be implemented correctly:
 the relevant feature/design doc (`FEATURE.md`, a `DESIGN.md` section,
@@ -56,13 +77,19 @@ cover it but haven't been run yet.
 
 - If tests already exist for this item, confirm you understand them
   and run them first to see the current (expected-red) state before
-  changing anything else.
+  changing anything else. If they already pass, the item may already
+  be done — stop, report that, and confirm with the user rather than
+  reimplementing already-working behavior.
 - If no tests exist yet, write them now, before any implementation —
   derive concrete test cases from the item's acceptance criteria in
   the plan/spec, following the project's existing test conventions and
   file layout. Confirm the new tests fail for the right reason (red),
   not for an unrelated error like a missing import or typo — a test
-  failing for the wrong reason isn't proof of anything yet.
+  failing for the wrong reason isn't proof of anything yet. If a
+  freshly written test passes immediately with no implementation
+  changes, treat that the same way: the behavior may already exist —
+  stop and confirm with the user rather than assuming the test itself
+  is wrong.
 - If the item genuinely has no test surface (a pure doc edit, a
   config-only change with no behavior to verify), say so explicitly
   and skip to implementation — don't invent a test for its own sake.
